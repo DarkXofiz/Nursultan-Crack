@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "nursultan_opensource",
+  "version": "${version}",
+  "name": "Nursultan Open Source",
+  "description": "A clean, minimal Fabric client mod base for Minecraft 1.21.1.",
+  "authors": ["Community"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.share.nursultan.NursultanClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
