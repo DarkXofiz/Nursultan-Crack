@@ -2,6 +2,7 @@ package dev.share.nursultan.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import dev.share.nursultan.NursultanClient;
 import dev.share.nursultan.module.Module;
 import dev.share.nursultan.module.ModuleManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -10,13 +11,18 @@ import net.minecraft.text.Text;
 
 import java.util.Optional;
 
-/** Client-side commands: /nur list, /nur toggle <module>, /nur coords */
+/** Client-side commands: /nur gui, /nur list, /nur toggle <module>, /nur coords */
 public final class NurCommand {
     private NurCommand() {
     }
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, ModuleManager modules) {
         dispatcher.register(ClientCommandManager.literal("nur")
+                .then(ClientCommandManager.literal("gui").executes(ctx -> {
+                    NursultanClient.requestGui();
+                    ctx.getSource().sendFeedback(Text.literal("Opening menu..."));
+                    return 1;
+                }))
                 .then(ClientCommandManager.literal("list").executes(ctx -> {
                     for (Module module : modules.getModules()) {
                         String state = module.isEnabled() ? "ON" : "OFF";

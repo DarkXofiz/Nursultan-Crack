@@ -86,12 +86,29 @@ ownership of that JAR or its bundled third-party components. Obtain permission
 and review each dependency's license before publishing any recovered code/assets.
 
 ## In-game usage
-The mod has a small module system. Modules are toggled with client-side commands
-(they are never sent to the server):
+The mod has a small module system and a click menu. Everything is client-side
+(nothing is sent to the server).
 
-- `/nur list` — show all modules and whether they are ON or OFF
-- `/nur toggle <module>` — toggle a module, e.g. `/nur toggle AutoSprint`
-- `/nur coords` — print your coordinates in chat
+**Menu:** press **Right Shift** (keyboard) to open or close it, or type `/nur gui`
+(works on touch screens, e.g. Zalith Launcher). Tap a module button to toggle it.
 
-Included module: `AutoSprint`. To add a module, extend
-`dev.share.nursultan.module.Module` and register it in `NursultanClient`.
+**Commands:**
+- `/nur gui` - open the menu
+- `/nur list` - show all modules and whether they are ON or OFF
+- `/nur toggle <module>` - toggle a module, e.g. `/nur toggle AutoSprint`
+- `/nur coords` - print your coordinates in chat
+
+**Modules:**
+- `AutoSprint` - holds the sprint key
+- `Fullbright` - hidden night vision effect (visual only)
+- `InfoHUD` - FPS and coordinates above the hotbar
+- `AutoRespawn` - respawns automatically after death
+- `AntiAFK` - jumps every 30 seconds
+- `AutoWalk` - holds the forward key
+- `AutoJump` - jumps automatically while walking forward
+- `AutoEat` - eats held food when hunger is low
+- `DeathCoords` - prints your death coordinates in chat
+- `TargetInfo` - name and health of the entity under your crosshair
+
+To add a module, extend `dev.share.nursultan.module.Module` and register it in
+`NursultanClient`. The menu lists every registered module automatically.
