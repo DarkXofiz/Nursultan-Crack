@@ -4,12 +4,15 @@ import dev.share.nursultan.command.NurCommand;
 import dev.share.nursultan.gui.ClickGuiScreen;
 import dev.share.nursultan.module.ModuleManager;
 import dev.share.nursultan.module.impl.AntiAfkModule;
+import dev.share.nursultan.module.impl.AttackAuraModule;
 import dev.share.nursultan.module.impl.AutoEatModule;
 import dev.share.nursultan.module.impl.AutoJumpModule;
 import dev.share.nursultan.module.impl.AutoRespawnModule;
 import dev.share.nursultan.module.impl.AutoSprintModule;
 import dev.share.nursultan.module.impl.AutoWalkModule;
 import dev.share.nursultan.module.impl.DeathCoordsModule;
+import dev.share.nursultan.module.impl.ElytraHelperModule;
+import dev.share.nursultan.module.impl.ElytraTargetModule;
 import dev.share.nursultan.module.impl.FullbrightModule;
 import dev.share.nursultan.module.impl.InfoHudModule;
 import dev.share.nursultan.module.impl.TargetInfoModule;
@@ -53,6 +56,9 @@ public final class NursultanClient implements ClientModInitializer {
         MODULES.register(new AutoEatModule());
         MODULES.register(new DeathCoordsModule());
         MODULES.register(new TargetInfoModule());
+        MODULES.register(new ElytraHelperModule());
+        MODULES.register(new AttackAuraModule());
+        MODULES.register(new ElytraTargetModule());
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             MODULES.tick(client);

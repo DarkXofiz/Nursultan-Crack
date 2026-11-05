@@ -96,6 +96,9 @@ The mod has a small module system and a click menu. Everything is client-side
 - `/nur gui` - open the menu
 - `/nur list` - show all modules and whether they are ON or OFF
 - `/nur toggle <module>` - toggle a module, e.g. `/nur toggle AutoSprint`
+- `/nur settings <module>` and `/nur set <module> <setting> <value>` - module settings
+- `/nur settings <module>` - show a module's settings
+- `/nur set <module> <setting> <value>` - change a setting
 - `/nur coords` - print your coordinates in chat
 
 **Modules:**
@@ -109,6 +112,24 @@ The mod has a small module system and a click menu. Everything is client-side
 - `AutoEat` - eats held food when hunger is low
 - `DeathCoords` - prints your death coordinates in chat
 - `TargetInfo` - name and health of the entity under your crosshair
+- `ElytraHelper` - swaps elytra and chestplate once (turns itself off)
+- `AttackAura` - attacks the nearest player or hostile mob within 3 blocks
+- `ElytraTarget` - aims at the nearest target while flying with an elytra
+
+Only use `AttackAura` and `ElytraTarget` on servers where you have permission.
 
 To add a module, extend `dev.share.nursultan.module.Module` and register it in
 `NursultanClient`. The menu lists every registered module automatically.
+
+## Module settings
+Some modules have settings. Show them with `/nur settings <module>` and change them with
+`/nur set <module> <setting> <value>`, for example:
+
+- `/nur settings AttackAura`
+- `/nur set AttackAura Range 4.5`
+- `/nur set AttackAura CheckCooldown off` (then `Delay` sets the ticks between attacks)
+- `/nur set AttackAura Players off`
+- `/nur set ElytraTarget Range 100`
+
+`AttackAura` settings: Range, Delay, CheckCooldown, Players, Mobs, Rotate.
+`ElytraTarget` settings: Range, Players, Mobs.

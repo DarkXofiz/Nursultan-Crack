@@ -1,11 +1,18 @@
 package dev.share.nursultan.module;
 
+import dev.share.nursultan.setting.Setting;
 import net.minecraft.client.MinecraftClient;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /** Base class for a toggleable client feature. */
 public abstract class Module {
     private final String name;
     private final String description;
+    private final List<Setting> settings = new ArrayList<>();
     private boolean enabled;
 
     protected Module(String name, String description) {
@@ -39,6 +46,19 @@ public abstract class Module {
 
     public void toggle() {
         setEnabled(!enabled);
+    }
+
+    protected <T extends Setting> T addSetting(T setting) {
+        settings.add(setting);
+        return setting;
+    }
+
+    public List<Setting> getSettings() {
+        return Collections.unmodifiableList(settings);
+    }
+
+    public Optional<Setting> findSetting(String settingName) {
+        return settings.stream().filter(s -> s.getName().equalsIgnoreCase(settingName)).findFirst();
     }
 
     protected void onEnable() {
