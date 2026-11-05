@@ -18,9 +18,27 @@ public final class NumberSetting extends Setting {
         return value;
     }
 
+    /** Moves the value one step up (direction 1) or down (direction -1). */
+    public void adjust(int direction) {
+        double step = Math.max(0.1, Math.round((max - min) / 20.0 * 10.0) / 10.0);
+        double next = value + direction * step;
+        next = Math.round(next * 10.0) / 10.0;
+        value = Math.max(min, Math.min(max, next));
+    }
+
+    @Override
+    public String label() {
+        return getName() + ": " + String.format(Locale.ROOT, "%.1f", value);
+    }
+
     @Override
     public String valueToString() {
         return String.format(Locale.ROOT, "%.1f", value) + " (" + min + " - " + max + ")";
+    }
+
+    @Override
+    public String serialize() {
+        return Double.toString(value);
     }
 
     @Override

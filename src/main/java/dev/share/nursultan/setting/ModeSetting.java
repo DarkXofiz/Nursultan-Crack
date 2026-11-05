@@ -21,8 +21,23 @@ public final class ModeSetting extends Setting {
     }
 
     @Override
+    public void cycle() {
+        index = (index + 1) % modes.length;
+    }
+
+    @Override
+    public String label() {
+        return getName() + ": " + modes[index];
+    }
+
+    @Override
     public String valueToString() {
         return modes[index] + " (" + String.join(", ", modes) + ")";
+    }
+
+    @Override
+    public String serialize() {
+        return modes[index];
     }
 
     @Override

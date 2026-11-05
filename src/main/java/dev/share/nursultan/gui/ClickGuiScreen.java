@@ -1,47 +1,57 @@
 package dev.share.nursultan.gui;
 
+import dev.share.nursultan.NursultanClient;
+import dev.share.nursultan.config.ConfigManager;
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
-import dev.share.nursultan.module.ModuleManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-/** Module menu: one button per module (two columns), tap to toggle. */
+/** Module menu with category tabs, toggle buttons and a settings button per module. */
 public final class ClickGuiScreen extends Screen {
-    private final ModuleManager modules;
+    private static Category selected = Category.COMBAT;
 
-    public ClickGuiScreen(ModuleManager modules) {
+    public ClickGuiScreen() {
         super(Text.literal("Nursultan"));
-        this.modules = modules;
     }
 
     @Override
     protected void init() {
-        int buttonWidth = 120;
-        int buttonHeight = 20;
+        Category[] categories = Category.values();
+        int tabWidth = 72;
         int gap = 4;
-        int left = this.width / 2 - buttonWidth - gap / 2;
-        int top = 30;
-
-        int index = 0;
-        for (Module module : modules.getModules()) {
-            int column = index % 2;
-            int row = index / 2;
-            int x = left + column * (buttonWidth + gap);
-            int y = top + row * (buttonHeight + gap);
-            ButtonWidget button = ButtonWidget.builder(label(module), btn -> {
-                module.toggle();
-                btn.setMessage(label(module));
-            }).dimensions(x, y, buttonWidth, buttonHeight).build();
-            this.addDrawableChild(button);
-            index++;
+        int total = categories.length * tabWidth + (categories.length - 1) * gap;
+        int tabX = (this.width - total) / 2;
+        for (Category category : categories) {
+            String text = category == selected ? "> " + category.getDisplayName() : category.getDisplayName();
+            this.addDrawableChild(ButtonWidget.builder(Text.literal(text), btn -> {
+                selected = category;
+                this.clearAndInit();
+            }).dimensions(tabX, 20, tabWidth, 20).build());
+            tabX += tabWidth + gap;
         }
 
-        int rows = (index + 1) / 2;
-        int closeY = top + rows * (buttonHeight + gap) + 8;
+        int y = 48;
+        for (Module module : NursultanClient.MODULES.byCategory(selected)) {
+            this.addDrawableChild(ButtonWidget.builder(label(module), btn -> {
+                module.toggle();
+                btn.setMessage(label(module));
+            }).dimensions(this.width / 2 - 82, y, 120, 20).build());
+            this.addDrawableChild(ButtonWidget.builder(Text.literal("Set"), btn ->
+                    this.client.setScreen(new ModuleSettingsScreen(module, this)))
+                    .dimensions(this.width / 2 + 42, y, 40, 20).build());
+            y += 22;
+        }
+
         this.addDrawableChild(ButtonWidget.builder(Text.literal("Close"), btn -> this.close())
-                .dimensions(this.width / 2 - buttonWidth / 2, closeY, buttonWidth, buttonHeight).build());
+                .dimensions(this.width / 2 - 60, y + 6, 120, 20).build());
+    }
+
+    @Override
+    public void removed() {
+        ConfigManager.save(NursultanClient.MODULES);
     }
 
     private static Text label(Module module) {

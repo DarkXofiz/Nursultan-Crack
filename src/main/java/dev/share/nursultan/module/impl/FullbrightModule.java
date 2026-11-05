@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -8,7 +9,7 @@ import net.minecraft.entity.effect.StatusEffects;
 /** Client-side night vision effect (visual only). */
 public final class FullbrightModule extends Module {
     public FullbrightModule() {
-        super("Fullbright", "Keeps a hidden night vision effect on you.");
+        super("Fullbright", "Keeps a hidden night vision effect on you.", Category.VISUAL);
     }
 
     @Override

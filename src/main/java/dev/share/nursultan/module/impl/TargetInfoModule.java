@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -9,7 +10,7 @@ import net.minecraft.text.Text;
 /** Shows the name and health of the creature under your crosshair. */
 public final class TargetInfoModule extends Module {
     public TargetInfoModule() {
-        super("TargetInfo", "Shows name and health of the entity you look at.");
+        super("TargetInfo", "Shows name and health of the entity you look at.", Category.VISUAL);
     }
 
     @Override

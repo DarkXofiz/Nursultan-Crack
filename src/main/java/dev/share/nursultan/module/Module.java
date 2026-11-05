@@ -12,12 +12,15 @@ import java.util.Optional;
 public abstract class Module {
     private final String name;
     private final String description;
+    private final Category category;
     private final List<Setting> settings = new ArrayList<>();
     private boolean enabled;
+    private int keyBind;
 
-    protected Module(String name, String description) {
+    protected Module(String name, String description, Category category) {
         this.name = name;
         this.description = description;
+        this.category = category;
     }
 
     public String getName() {
@@ -26,6 +29,10 @@ public abstract class Module {
 
     public String getDescription() {
         return description;
+    }
+
+    public Category getCategory() {
+        return category;
     }
 
     public boolean isEnabled() {
@@ -46,6 +53,20 @@ public abstract class Module {
 
     public void toggle() {
         setEnabled(!enabled);
+    }
+
+    /** GLFW key code that toggles this module, or 0 for none. */
+    public int getKeyBind() {
+        return keyBind;
+    }
+
+    public void setKeyBind(int keyBind) {
+        this.keyBind = keyBind;
+    }
+
+    /** Combat modules always start disabled; the others remember their state. */
+    public boolean shouldPersistEnabled() {
+        return category != Category.COMBAT;
     }
 
     protected <T extends Setting> T addSetting(T setting) {

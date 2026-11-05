@@ -65,7 +65,7 @@ public final class Targeting {
         return best;
     }
 
-    private static boolean matches(LivingEntity entity, String targets) {
+    public static boolean matches(LivingEntity entity, String targets) {
         boolean isPlayer = entity instanceof PlayerEntity;
         boolean isHostile = entity instanceof HostileEntity;
         switch (targets) {
@@ -86,15 +86,19 @@ public final class Targeting {
         return (float) (Math.toDegrees(Math.atan2(center.z - eye.z, center.x - eye.x)) - 90.0);
     }
 
-    /** Turns the player's view toward the center of the target. */
-    public static void faceEntity(ClientPlayerEntity player, Entity target) {
+    public static float pitchTo(ClientPlayerEntity player, Entity target) {
         Vec3d eye = player.getEyePos();
         Vec3d center = target.getBoundingBox().getCenter();
         double dx = center.x - eye.x;
         double dy = center.y - eye.y;
         double dz = center.z - eye.z;
         double horizontal = Math.sqrt(dx * dx + dz * dz);
+        return (float) -Math.toDegrees(Math.atan2(dy, horizontal));
+    }
+
+    /** Turns the player's view toward the center of the target. */
+    public static void faceEntity(ClientPlayerEntity player, Entity target) {
         player.setYaw(yawTo(player, target));
-        player.setPitch((float) -Math.toDegrees(Math.atan2(dy, horizontal)));
+        player.setPitch(pitchTo(player, target));
     }
 }

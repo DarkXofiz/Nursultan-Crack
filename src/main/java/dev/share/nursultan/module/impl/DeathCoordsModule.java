@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.DeathScreen;
@@ -10,7 +11,7 @@ public final class DeathCoordsModule extends Module {
     private boolean reported;
 
     public DeathCoordsModule() {
-        super("DeathCoords", "Writes your death coordinates in chat.");
+        super("DeathCoords", "Writes your death coordinates in chat.", Category.PLAYER);
     }
 
     @Override

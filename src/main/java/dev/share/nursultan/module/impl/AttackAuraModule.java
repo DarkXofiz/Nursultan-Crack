@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import dev.share.nursultan.setting.BooleanSetting;
 import dev.share.nursultan.setting.ModeSetting;
@@ -25,7 +26,7 @@ public final class AttackAuraModule extends Module {
             new BooleanSetting("critsOnly", "Only attack while falling (critical hits)", false));
 
     public AttackAuraModule() {
-        super("AttackAura", "Attacks the best target in range.");
+        super("AttackAura", "Attacks the best target in range.", Category.COMBAT);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import dev.share.nursultan.setting.ModeSetting;
 import dev.share.nursultan.setting.NumberSetting;
@@ -19,7 +20,7 @@ public final class ElytraTargetModule extends Module {
             new ModeSetting("sort", "How to pick between targets", "distance", Targeting.SORT_MODES));
 
     public ElytraTargetModule() {
-        super("ElytraTarget", "Aims at the best target while flying with an elytra.");
+        super("ElytraTarget", "Aims at the best target while flying with an elytra.", Category.COMBAT);
     }
 
     @Override

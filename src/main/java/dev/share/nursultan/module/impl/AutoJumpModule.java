@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 
@@ -8,7 +9,7 @@ public final class AutoJumpModule extends Module {
     private boolean holding;
 
     public AutoJumpModule() {
-        super("AutoJump", "Jumps automatically while walking forward.");
+        super("AutoJump", "Jumps automatically while walking forward.", Category.MOVEMENT);
     }
 
     @Override

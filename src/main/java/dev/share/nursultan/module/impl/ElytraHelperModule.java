@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
@@ -24,7 +25,7 @@ public final class ElytraHelperModule extends Module {
     };
 
     public ElytraHelperModule() {
-        super("ElytraHelper", "Swaps elytra and chestplate once, then turns off.");
+        super("ElytraHelper", "Swaps elytra and chestplate once, then turns off.", Category.COMBAT);
     }
 
     @Override

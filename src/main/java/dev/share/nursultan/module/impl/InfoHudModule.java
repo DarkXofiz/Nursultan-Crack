@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -9,7 +10,7 @@ public final class InfoHudModule extends Module {
     private int ticks;
 
     public InfoHudModule() {
-        super("InfoHUD", "Shows FPS and coordinates above the hotbar.");
+        super("InfoHUD", "Shows FPS and coordinates above the hotbar.", Category.VISUAL);
     }
 
     @Override

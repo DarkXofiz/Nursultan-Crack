@@ -1,11 +1,12 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 
 public final class AutoSprintModule extends Module {
     public AutoSprintModule() {
-        super("AutoSprint", "Holds the sprint key while enabled.");
+        super("AutoSprint", "Holds the sprint key while enabled.", Category.MOVEMENT);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 
@@ -9,7 +10,7 @@ public final class AntiAfkModule extends Module {
     private int ticks;
 
     public AntiAfkModule() {
-        super("AntiAFK", "Jumps every 30 seconds to avoid AFK kicks.");
+        super("AntiAFK", "Jumps every 30 seconds to avoid AFK kicks.", Category.PLAYER);
     }
 
     @Override

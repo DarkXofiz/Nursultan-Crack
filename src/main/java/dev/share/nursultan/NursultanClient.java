@@ -1,14 +1,17 @@
 package dev.share.nursultan;
 
 import dev.share.nursultan.command.NurCommand;
+import dev.share.nursultan.config.ConfigManager;
 import dev.share.nursultan.gui.ClickGuiScreen;
 import dev.share.nursultan.module.ModuleManager;
+import dev.share.nursultan.module.impl.AimAssistModule;
 import dev.share.nursultan.module.impl.AntiAfkModule;
 import dev.share.nursultan.module.impl.AttackAuraModule;
 import dev.share.nursultan.module.impl.AutoEatModule;
 import dev.share.nursultan.module.impl.AutoJumpModule;
 import dev.share.nursultan.module.impl.AutoRespawnModule;
 import dev.share.nursultan.module.impl.AutoSprintModule;
+import dev.share.nursultan.module.impl.AutoTotemModule;
 import dev.share.nursultan.module.impl.AutoWalkModule;
 import dev.share.nursultan.module.impl.DeathCoordsModule;
 import dev.share.nursultan.module.impl.ElytraHelperModule;
@@ -16,8 +19,10 @@ import dev.share.nursultan.module.impl.ElytraTargetModule;
 import dev.share.nursultan.module.impl.FullbrightModule;
 import dev.share.nursultan.module.impl.InfoHudModule;
 import dev.share.nursultan.module.impl.TargetInfoModule;
+import dev.share.nursultan.module.impl.TriggerBotModule;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
@@ -38,6 +43,7 @@ public final class NursultanClient implements ClientModInitializer {
 
     private static boolean menuKeyWasDown;
     private static boolean openRequested;
+    private static int saveTicks;
 
     /** Used by /nur gui; the menu opens on the next client tick. */
     public static void requestGui() {
@@ -46,24 +52,36 @@ public final class NursultanClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        MODULES.register(new AttackAuraModule());
+        MODULES.register(new TriggerBotModule());
+        MODULES.register(new AimAssistModule());
+        MODULES.register(new AutoTotemModule());
+        MODULES.register(new ElytraTargetModule());
+        MODULES.register(new ElytraHelperModule());
         MODULES.register(new AutoSprintModule());
-        MODULES.register(new FullbrightModule());
-        MODULES.register(new InfoHudModule());
-        MODULES.register(new AutoRespawnModule());
-        MODULES.register(new AntiAfkModule());
         MODULES.register(new AutoWalkModule());
         MODULES.register(new AutoJumpModule());
+        MODULES.register(new AntiAfkModule());
+        MODULES.register(new AutoRespawnModule());
         MODULES.register(new AutoEatModule());
         MODULES.register(new DeathCoordsModule());
+        MODULES.register(new FullbrightModule());
+        MODULES.register(new InfoHudModule());
         MODULES.register(new TargetInfoModule());
-        MODULES.register(new ElytraHelperModule());
-        MODULES.register(new AttackAuraModule());
-        MODULES.register(new ElytraTargetModule());
+
+        ConfigManager.load(MODULES);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             MODULES.tick(client);
+            MODULES.handleBinds(client);
             handleMenu(client);
+            saveTicks++;
+            if (saveTicks >= 1200) {
+                saveTicks = 0;
+                ConfigManager.save(MODULES);
+            }
         });
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> ConfigManager.save(MODULES));
         ClientCommandRegistrationCallback.EVENT.register(
                 (dispatcher, registryAccess) -> NurCommand.register(dispatcher, MODULES));
 
@@ -78,7 +96,7 @@ public final class NursultanClient implements ClientModInitializer {
         if (client.currentScreen == null) {
             if (pressed || openRequested) {
                 openRequested = false;
-                client.setScreen(new ClickGuiScreen(MODULES));
+                client.setScreen(new ClickGuiScreen());
             }
         } else if (client.currentScreen instanceof ClickGuiScreen && pressed) {
             client.setScreen(null);

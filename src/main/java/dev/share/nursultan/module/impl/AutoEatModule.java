@@ -1,5 +1,6 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
@@ -11,7 +12,7 @@ public final class AutoEatModule extends Module {
     private boolean eating;
 
     public AutoEatModule() {
-        super("AutoEat", "Eats held food when hunger is low.");
+        super("AutoEat", "Eats held food when hunger is low.", Category.PLAYER);
     }
 
     @Override

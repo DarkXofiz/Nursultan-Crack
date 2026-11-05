@@ -1,11 +1,12 @@
 package dev.share.nursultan.module.impl;
 
+import dev.share.nursultan.module.Category;
 import dev.share.nursultan.module.Module;
 import net.minecraft.client.MinecraftClient;
 
 public final class AutoWalkModule extends Module {
     public AutoWalkModule() {
-        super("AutoWalk", "Holds the forward key while enabled.");
+        super("AutoWalk", "Holds the forward key while enabled.", Category.MOVEMENT);
     }
 
     @Override

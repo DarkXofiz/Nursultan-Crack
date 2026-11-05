@@ -86,50 +86,33 @@ ownership of that JAR or its bundled third-party components. Obtain permission
 and review each dependency's license before publishing any recovered code/assets.
 
 ## In-game usage
-The mod has a small module system and a click menu. Everything is client-side
-(nothing is sent to the server).
+The mod has a category menu, per-module settings, key binds and a saved config.
+Everything is client-side (nothing is sent to the server).
 
 **Menu:** press **Right Shift** (keyboard) to open or close it, or type `/nur gui`
-(works on touch screens, e.g. Zalith Launcher). Tap a module button to toggle it.
+(works on touch screens, e.g. Zalith Launcher).
+- Top row: categories (Combat, Movement, Player, Visual).
+- `Name: ON/OFF` button toggles a module. `Set` opens its settings.
+- Settings screen: `-` / `+` change numbers, other buttons switch on/off or cycle options.
+- `Bind: ...` button: click it, then press a key to bind the module (Esc cancels,
+  Delete clears). Pressing the key later toggles the module (needs a keyboard).
+
+**Config:** saved automatically to `config/nursultan_opensource.properties`
+(module states, binds and settings). Combat modules always start disabled.
 
 **Commands:**
 - `/nur gui` - open the menu
 - `/nur list` - show all modules and whether they are ON or OFF
 - `/nur toggle <module>` - toggle a module, e.g. `/nur toggle AutoSprint`
-- `/nur settings <module>` and `/nur set <module> <setting> <value>` - module settings
-- `/nur settings <module>` - show a module's settings
-- `/nur set <module> <setting> <value>` - change a setting
+- `/nur settings <module>` and `/nur set <module> <setting> <value>` - change settings
 - `/nur coords` - print your coordinates in chat
 
-**Modules:**
-- `AutoSprint` - holds the sprint key
-- `Fullbright` - hidden night vision effect (visual only)
-- `InfoHUD` - FPS and coordinates above the hotbar
-- `AutoRespawn` - respawns automatically after death
-- `AntiAFK` - jumps every 30 seconds
-- `AutoWalk` - holds the forward key
-- `AutoJump` - jumps automatically while walking forward
-- `AutoEat` - eats held food when hunger is low
-- `DeathCoords` - prints your death coordinates in chat
-- `TargetInfo` - name and health of the entity under your crosshair
-- `ElytraHelper` - swaps elytra and chestplate once (turns itself off)
-- `AttackAura` - attacks the nearest player or hostile mob within 3 blocks
-- `ElytraTarget` - aims at the nearest target while flying with an elytra
+**Combat:** `AttackAura`, `TriggerBot`, `AimAssist`, `AutoTotem`, `ElytraTarget`, `ElytraHelper`.
+**Movement:** `AutoSprint`, `AutoWalk`, `AutoJump`.
+**Player:** `AntiAFK`, `AutoRespawn`, `AutoEat`, `DeathCoords`.
+**Visual:** `Fullbright`, `InfoHUD`, `TargetInfo`.
 
-Only use `AttackAura` and `ElytraTarget` on servers where you have permission.
+Only use the combat modules on servers where you have permission.
 
-To add a module, extend `dev.share.nursultan.module.Module` and register it in
-`NursultanClient`. The menu lists every registered module automatically.
-
-## Module settings
-Some modules have settings. Show them with `/nur settings <module>` and change them with
-`/nur set <module> <setting> <value>`, for example:
-
-- `/nur settings AttackAura`
-- `/nur set AttackAura Range 4.5`
-- `/nur set AttackAura CheckCooldown off` (then `Delay` sets the ticks between attacks)
-- `/nur set AttackAura Players off`
-- `/nur set ElytraTarget Range 100`
-
-`AttackAura` settings: Range, Delay, CheckCooldown, Players, Mobs, Rotate.
-`ElytraTarget` settings: Range, Players, Mobs.
+To add a module, extend `dev.share.nursultan.module.Module`, give it a `Category`,
+add settings with `addSetting(...)` and register it in `NursultanClient`.
