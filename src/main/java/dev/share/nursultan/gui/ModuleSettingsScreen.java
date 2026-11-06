@@ -6,16 +6,36 @@ import dev.share.nursultan.module.Module;
 import dev.share.nursultan.setting.NumberSetting;
 import dev.share.nursultan.setting.Setting;
 import dev.share.nursultan.util.KeyNames;
+import dev.share.nursultan.util.KeyUtil;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
-/** Settings and key bind of one module. */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
+/** Settings and key bind of one module, drawn in the same dark style as the main menu. */
 public final class ModuleSettingsScreen extends Screen {
+    private static final int PANEL_BG = 0xCC12121A;
+    private static final int HEADER_BG = 0xFF1C1C28;
+    private static final int ACCENT = 0xFF7C5CFF;
+    private static final int BUTTON_BG = 0xFF23232F;
+    private static final int HOVER = 0x33FFFFFF;
+    private static final int WHITE = 0xFFFFFFFF;
+    private static final int GRAY = 0xFFAAAAB4;
+
+    private static final int LINE_HEIGHT = 18;
+    private static final int PANEL_WIDTH = 210;
+
     private final Module module;
     private final Screen parent;
-    private ButtonWidget bindButton;
+    private final List<Line> lines = new ArrayList<>();
+    private int panelX;
+    private int panelY;
+    private int panelHeight;
     private boolean listening;
 
     public ModuleSettingsScreen(Module module, Screen parent) {
@@ -26,48 +46,71 @@ public final class ModuleSettingsScreen extends Screen {
 
     @Override
     protected void init() {
-        int cx = this.width / 2;
-        int y = 30;
+        lines.clear();
+        panelX = (this.width - PANEL_WIDTH) / 2;
+        panelY = 24;
+        int y = panelY + 4;
 
-        ButtonWidget header = ButtonWidget.builder(Text.literal(module.getName()), btn -> {
-        }).dimensions(cx - 100, y, 200, 20).build();
-        header.active = false;
-        this.addDrawableChild(header);
-        y += 26;
+        lines.add(new Line(panelX + 4, y, PANEL_WIDTH - 8, () -> module.getName(), true));
+        y += LINE_HEIGHT + 2;
 
         for (Setting setting : module.getSettings()) {
             if (setting instanceof NumberSetting) {
                 NumberSetting number = (NumberSetting) setting;
-                ButtonWidget valueLabel = ButtonWidget.builder(Text.literal(number.label()), btn -> {
-                }).dimensions(cx - 70, y, 140, 20).build();
-                valueLabel.active = false;
-                this.addDrawableChild(ButtonWidget.builder(Text.literal("-"), btn -> {
-                    number.adjust(-1);
-                    valueLabel.setMessage(Text.literal(number.label()));
-                }).dimensions(cx - 100, y, 28, 20).build());
-                this.addDrawableChild(valueLabel);
-                this.addDrawableChild(ButtonWidget.builder(Text.literal("+"), btn -> {
-                    number.adjust(1);
-                    valueLabel.setMessage(Text.literal(number.label()));
-                }).dimensions(cx + 72, y, 28, 20).build());
+                int x = panelX + 4;
+                int fullWidth = PANEL_WIDTH - 8;
+                addClickArea(x, y, 24, () -> number.adjust(-1));
+                addClickArea(x + fullWidth - 24, y, 24, () -> number.adjust(1));
+                lines.add(new Line(x, y, fullWidth, number::label, false).withNumberButtons());
             } else {
-                this.addDrawableChild(ButtonWidget.builder(Text.literal(setting.label()), btn -> {
-                    setting.cycle();
-                    btn.setMessage(Text.literal(setting.label()));
-                }).dimensions(cx - 100, y, 200, 20).build());
+                addClickArea(panelX + 4, y, PANEL_WIDTH - 8, setting::cycle);
+                lines.add(new Line(panelX + 4, y, PANEL_WIDTH - 8, setting::label, false));
             }
-            y += 22;
+            y += LINE_HEIGHT + 2;
         }
 
-        bindButton = ButtonWidget.builder(bindLabel(), btn -> {
-            listening = true;
-            btn.setMessage(Text.literal("Press a key... (Esc cancel, Del clear)"));
-        }).dimensions(cx - 100, y, 200, 20).build();
-        this.addDrawableChild(bindButton);
-        y += 22;
+        addClickArea(panelX + 4, y, PANEL_WIDTH - 8, () -> listening = true);
+        lines.add(new Line(panelX + 4, y, PANEL_WIDTH - 8, this::bindText, false));
+        y += LINE_HEIGHT + 2;
 
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("Back"), btn -> this.goBack())
-                .dimensions(cx - 100, y + 6, 200, 20).build());
+        addClickArea(panelX + 4, y, PANEL_WIDTH - 8, this::goBack);
+        lines.add(new Line(panelX + 4, y, PANEL_WIDTH - 8, () -> "Back", false));
+        y += LINE_HEIGHT + 2;
+
+        panelHeight = y - panelY + 2;
+    }
+
+    private void addClickArea(int x, int y, int width, Runnable action) {
+        ButtonWidget button = ButtonWidget.builder(Text.empty(), btn -> action.run())
+                .dimensions(x, y, width, LINE_HEIGHT).build();
+        button.setAlpha(0.0f);
+        this.addDrawableChild(button);
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
+
+        context.fill(panelX, panelY, panelX + PANEL_WIDTH, panelY + panelHeight, PANEL_BG);
+        for (Line line : lines) {
+            int background = line.header ? HEADER_BG : BUTTON_BG;
+            context.fill(line.x, line.y, line.x + line.width, line.y + LINE_HEIGHT, background);
+            if (line.header) {
+                context.fill(line.x, line.y + LINE_HEIGHT - 2, line.x + line.width, line.y + LINE_HEIGHT, ACCENT);
+            } else if (mouseX >= line.x && mouseX < line.x + line.width
+                    && mouseY >= line.y && mouseY < line.y + LINE_HEIGHT) {
+                context.fill(line.x, line.y, line.x + line.width, line.y + LINE_HEIGHT, HOVER);
+            }
+
+            String text = this.textRenderer.trimToWidth(line.text.get(), line.width - 8);
+            int textX = line.x + (line.width - this.textRenderer.getWidth(text)) / 2;
+            context.drawTextWithShadow(this.textRenderer, text, textX, line.y + 5, line.header ? WHITE : GRAY);
+
+            if (line.numberButtons) {
+                context.drawTextWithShadow(this.textRenderer, "-", line.x + 9, line.y + 5, WHITE);
+                context.drawTextWithShadow(this.textRenderer, "+", line.x + line.width - 15, line.y + 5, WHITE);
+            }
+        }
     }
 
     @Override
@@ -76,20 +119,20 @@ public final class ModuleSettingsScreen extends Screen {
         if (!listening || this.client == null) {
             return;
         }
-        long handle = this.client.getWindow().getHandle();
-        for (int key = 32; key <= 348; key++) {
-            if (GLFW.glfwGetKey(handle, key) != GLFW.GLFW_PRESS) {
-                continue;
+        try {
+            int key = KeyUtil.firstPressed(this.client.getWindow().getHandle());
+            if (key == -1) {
+                return;
             }
             if (key == GLFW.GLFW_KEY_BACKSPACE || key == GLFW.GLFW_KEY_DELETE) {
                 module.setKeyBind(0);
             } else if (key != GLFW.GLFW_KEY_ESCAPE) {
                 module.setKeyBind(key);
             }
-            listening = false;
-            bindButton.setMessage(bindLabel());
-            break;
+        } catch (Throwable t) {
+            NursultanClient.LOGGER.warn("Key binding is not supported here, use /nur bind", t);
         }
+        listening = false;
     }
 
     @Override
@@ -103,7 +146,32 @@ public final class ModuleSettingsScreen extends Screen {
         }
     }
 
-    private Text bindLabel() {
-        return Text.literal("Bind: " + KeyNames.of(module.getKeyBind()));
+    private String bindText() {
+        if (listening) {
+            return "Press a key... (Esc cancel, Del clear)";
+        }
+        return "Bind: " + KeyNames.of(module.getKeyBind());
+    }
+
+    private static final class Line {
+        final int x;
+        final int y;
+        final int width;
+        final Supplier<String> text;
+        final boolean header;
+        boolean numberButtons;
+
+        Line(int x, int y, int width, Supplier<String> text, boolean header) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.text = text;
+            this.header = header;
+        }
+
+        Line withNumberButtons() {
+            this.numberButtons = true;
+            return this;
+        }
     }
 }

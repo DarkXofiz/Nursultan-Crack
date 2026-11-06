@@ -20,6 +20,7 @@ import dev.share.nursultan.module.impl.FullbrightModule;
 import dev.share.nursultan.module.impl.InfoHudModule;
 import dev.share.nursultan.module.impl.TargetInfoModule;
 import dev.share.nursultan.module.impl.TriggerBotModule;
+import dev.share.nursultan.util.KeyUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -89,7 +90,7 @@ public final class NursultanClient implements ClientModInitializer {
     }
 
     private static void handleMenu(MinecraftClient client) {
-        boolean down = GLFW.glfwGetKey(client.getWindow().getHandle(), MENU_KEY) == GLFW.GLFW_PRESS;
+        boolean down = KeyUtil.isDown(client.getWindow().getHandle(), MENU_KEY);
         boolean pressed = down && !menuKeyWasDown;
         menuKeyWasDown = down;
 

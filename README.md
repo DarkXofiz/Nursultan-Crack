@@ -86,16 +86,16 @@ ownership of that JAR or its bundled third-party components. Obtain permission
 and review each dependency's license before publishing any recovered code/assets.
 
 ## In-game usage
-The mod has a category menu, per-module settings, key binds and a saved config.
+The mod has a dark category menu, per-module settings, key binds and a saved config.
 Everything is client-side (nothing is sent to the server).
 
 **Menu:** press **Right Shift** (keyboard) to open or close it, or type `/nur gui`
 (works on touch screens, e.g. Zalith Launcher).
-- Top row: categories (Combat, Movement, Player, Visual).
-- `Name: ON/OFF` button toggles a module. `Set` opens its settings.
-- Settings screen: `-` / `+` change numbers, other buttons switch on/off or cycle options.
-- `Bind: ...` button: click it, then press a key to bind the module (Esc cancels,
-  Delete clears). Pressing the key later toggles the module (needs a keyboard).
+- One panel per category (Combat, Movement, Player, Visual).
+- Tap a module name to toggle it (purple = ON). Tap the dots on its right for its settings.
+- Settings screen: `-` / `+` change numbers, other rows switch on/off or cycle options.
+- `Bind: ...` row: tap it, then press a key to bind the module (Esc cancels, Delete clears).
+  If the launcher does not support key polling, use `/nur bind <module> <key>` instead.
 
 **Config:** saved automatically to `config/nursultan_opensource.properties`
 (module states, binds and settings). Combat modules always start disabled.
@@ -105,6 +105,7 @@ Everything is client-side (nothing is sent to the server).
 - `/nur list` - show all modules and whether they are ON or OFF
 - `/nur toggle <module>` - toggle a module, e.g. `/nur toggle AutoSprint`
 - `/nur settings <module>` and `/nur set <module> <setting> <value>` - change settings
+- `/nur bind <module> <key>` - bind a key, e.g. `/nur bind AutoSprint R` (`none` removes it)
 - `/nur coords` - print your coordinates in chat
 
 **Combat:** `AttackAura`, `TriggerBot`, `AimAssist`, `AutoTotem`, `ElytraTarget`, `ElytraHelper`.

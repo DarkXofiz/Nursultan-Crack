@@ -6,6 +6,7 @@ import dev.share.nursultan.NursultanClient;
 import dev.share.nursultan.module.Module;
 import dev.share.nursultan.module.ModuleManager;
 import dev.share.nursultan.setting.Setting;
+import dev.share.nursultan.util.KeyNames;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
@@ -94,6 +95,25 @@ public final class NurCommand {
                                                                     + " = " + setting.valueToString()));
                                                     return 1;
                                                 })))))
+                .then(ClientCommandManager.literal("bind")
+                        .then(ClientCommandManager.argument("module", StringArgumentType.word())
+                                .then(ClientCommandManager.argument("key", StringArgumentType.word()).executes(ctx -> {
+                                    Module module = findModule(ctx.getSource(), modules,
+                                            StringArgumentType.getString(ctx, "module"));
+                                    if (module == null) {
+                                        return 0;
+                                    }
+                                    String keyName = StringArgumentType.getString(ctx, "key");
+                                    int key = KeyNames.parse(keyName);
+                                    if (key < 0) {
+                                        ctx.getSource().sendError(Text.literal("Unknown key: " + keyName));
+                                        return 0;
+                                    }
+                                    module.setKeyBind(key);
+                                    ctx.getSource().sendFeedback(Text.literal(
+                                            module.getName() + " bound to " + KeyNames.of(key)));
+                                    return 1;
+                                }))))
                 .then(ClientCommandManager.literal("coords").executes(ctx -> {
                     var player = ctx.getSource().getPlayer();
                     ctx.getSource().sendFeedback(Text.literal(String.format(

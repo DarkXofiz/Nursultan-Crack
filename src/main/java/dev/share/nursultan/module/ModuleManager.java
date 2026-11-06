@@ -1,7 +1,7 @@
 package dev.share.nursultan.module;
 
+import dev.share.nursultan.util.KeyUtil;
 import net.minecraft.client.MinecraftClient;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +52,7 @@ public final class ModuleManager {
             if (key == 0) {
                 continue;
             }
-            boolean down = GLFW.glfwGetKey(handle, key) == GLFW.GLFW_PRESS;
+            boolean down = KeyUtil.isDown(handle, key);
             boolean was = bindWasDown.getOrDefault(module, false);
             bindWasDown.put(module, down);
             if (down && !was && client.currentScreen == null) {
